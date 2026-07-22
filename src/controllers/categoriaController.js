@@ -11,4 +11,17 @@ async function repassaTodos(req,res) {
     }
 }
 
-module.exports = {repassaTodos};
+async function criar(req,res) {
+    const dados = req.body;
+
+    try {
+        const resultado = await categoriaService.criar(dados);
+        return res.status(201).json(resultado);
+    }
+    catch(error) {
+        console.error("Erro ao criar categoria", error)
+        return res.status(400).json({ erro: error.message });
+    }
+}
+
+module.exports = {repassaTodos,criar};
