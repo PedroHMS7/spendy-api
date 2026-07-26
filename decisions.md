@@ -15,3 +15,10 @@ O campo `tipo` já é restrito pelo ENUM no MySQL, mas validei de novo no
 Service. Motivo: se só o banco barrasse, o erro que voltaria pro cliente
 seria uma mensagem técnica do driver, não uma mensagem clara. Validar no
 Service garante controle sobre a mensagem de erro que o usuário recebe.
+
+## CRUD de categorias completo
+GET, POST, PUT, DELETE funcionando de ponta a ponta em 4 camadas,
+com validação de negócio no Service e tratamento de erro por tipo
+(400 para validação, 404 para recurso não encontrado, 500 para
+falha de banco). Toda query com dado externo usa parametrização (?)
+para evitar SQL Injection.
