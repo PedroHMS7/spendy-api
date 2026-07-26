@@ -24,4 +24,23 @@ async function criar(req,res) {
     }
 }
 
-module.exports = {repassaTodos,criar};
+async function atualizar(req,res) {
+    const dados = req.body;
+    const id = Number(req.params.id);
+
+    try {
+        const categoriaAtualizada = await categoriaService.atualizar(id,dados);
+        return res.status(200).json(categoriaAtualizada);
+    }
+    catch(error) {
+        console.error("Erro ao atualizar categoria");
+        
+        if(error.message === "Categoria não encontrada"){
+            return res.status(404).json({ erro: error.message});
+        }
+
+        return res.status(400).json({ erro: error.message });
+    }
+}
+
+module.exports = {repassaTodos,criar,atualizar};

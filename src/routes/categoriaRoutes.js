@@ -6,4 +6,6 @@ router.get('/categorias', categoriaController.repassaTodos);
 
 router.post('/categorias', categoriaController.criar);
 
+router.put('/categorias/:id', categoriaController.atualizar);
+
 module.exports = router;

@@ -11,7 +11,7 @@ async function buscarTodas() {
     }
 }
 
-async function criar(nome,tipo){
+async function criar(nome,tipo) {
     try {
         const [resultado] = await pool.query('INSERT INTO categorias (nome, tipo) VALUES (?, ?)', [nome, tipo]);
         return { id: resultado.insertId, nome, tipo };
@@ -22,5 +22,23 @@ async function criar(nome,tipo){
     }
 }
 
+async function atualizar(id,dados) {
+    const { nome, tipo } = dados;
 
-module.exports = {buscarTodas,criar};
+    try {
+        const [resultado] = await pool.query('UPDATE categorias SET nome = ?, tipo = ?  WHERE id = ?', [nome,tipo,id]);
+
+        if(resultado.affectedRows === 0){
+            return null;
+        }
+
+        return { id: Number(id), nome, tipo}
+    }
+    catch(error) {
+        console.error("Erro ao atualizar categoria no banco", error)
+        throw error;
+    }
+}
+
+
+module.exports = {buscarTodas,criar,atualizar};
