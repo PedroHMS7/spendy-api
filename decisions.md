@@ -22,3 +22,8 @@ com validação de negócio no Service e tratamento de erro por tipo
 (400 para validação, 404 para recurso não encontrado, 500 para
 falha de banco). Toda query com dado externo usa parametrização (?)
 para evitar SQL Injection.
+
+## Refactor: validação extraída
+Unifiquei a validação duplicada de `criar` e `atualizar` numa função
+`validar(nome, tipo)` única. Retestei os dois endpoints (nome vazio,
+tipo inválido) para confirmar que o comportamento externo não mudou.
