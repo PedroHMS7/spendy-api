@@ -4,9 +4,7 @@ async function listarTodas() {
     return await categoriaRepository.buscarTodas();
 }
 
-async function criar(dados) {
-    const {nome,tipo} = dados;
-
+function validarCategoria(nome,tipo){
     if(nome.trim() === "") {
         throw new Error("Nome inválido");
     }
@@ -14,6 +12,12 @@ async function criar(dados) {
     if(!['receita','despesa'].includes(tipo)) {
         throw new Error("Tipo inválido");
     }
+}
+
+async function criar(dados) {
+    const {nome,tipo} = dados;
+
+    validarCategoria(nome,tipo);
 
     try {
         const categoriaCriada = await categoriaRepository.criar(nome,tipo);
@@ -28,13 +32,7 @@ async function criar(dados) {
 async function atualizar(id,dados) {
     const { nome, tipo } = dados;
 
-    if(nome.trim() === "") {
-        throw new Error("Nome inválido");
-    }
-
-    if(!['receita','despesa'].includes(tipo)) {
-        throw new Error("Tipo inválido");
-    }
+    validarCategoria(nome,tipo);
 
     try {
         const categoriaAtualizada = await categoriaRepository.atualizar(id,dados);
