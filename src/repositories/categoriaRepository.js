@@ -40,5 +40,21 @@ async function atualizar(id,dados) {
     }
 }
 
+async function excluir(id) {
+    try {
+        const [categoriaExcluida] = await pool.query('DELETE FROM categorias WHERE id = ?', [id]);
 
-module.exports = {buscarTodas,criar,atualizar};
+        if(categoriaExcluida.affectedRows === 0){
+            return null;
+        } 
+    
+        return Number(id);
+    }
+    catch(error) {
+        console.error("Erro ao excluir categoria", error);
+        throw error;
+    }
+}
+
+
+module.exports = {buscarTodas,criar,atualizar,excluir};

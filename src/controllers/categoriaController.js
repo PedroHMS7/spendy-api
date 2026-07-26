@@ -43,4 +43,22 @@ async function atualizar(req,res) {
     }
 }
 
-module.exports = {repassaTodos,criar,atualizar};
+async function excluir(req,res) {
+    const id = Number(req.params.id);
+
+    try {
+        await categoriaService.excluir(id);
+        return res.status(204).send();
+    }
+    catch(error) {
+        console.error("Erro ao excluir categoria", error);
+
+        if(error.message === "Categoria não encontrada"){
+            return res.status(404).json({ erro: error.message});
+        }
+
+        return res.status(400).json({ erro: error.message});
+    }
+}
+
+module.exports = {repassaTodos,criar,atualizar,excluir};

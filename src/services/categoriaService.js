@@ -51,4 +51,20 @@ async function atualizar(id,dados) {
     }
 }
 
-module.exports = {listarTodas,criar,atualizar};
+async function excluir(id) {
+    try {
+        const categoriaExcluida = await categoriaRepository.excluir(id);
+        
+        if(categoriaExcluida === null){
+            throw new Error("Categoria não encontrada");
+        }
+
+        return categoriaExcluida;
+    }
+    catch(error){
+        console.error("Erro ao excluir categoria", error);
+        throw error;
+    }
+}
+
+module.exports = {listarTodas,criar,atualizar,excluir};
