@@ -1,9 +1,7 @@
 const transacaoRepository = require('../repositories/transacaoRepository');
 const categoriaRepository = require('../repositories/categoriaRepository');
 
-async function criar(dados) {
-    const { descricao, valor, tipo, data, categoria_id } = dados;
-
+async function validarTransacao(descricao, valor, tipo, categoria_id) {
     if(descricao.trim() === ""){
         throw new Error("Descrição inválida");
     }
@@ -21,6 +19,12 @@ async function criar(dados) {
     if(!categoria){
         throw new Error("Categoria não encontrada");
     }
+}
+
+async function criar(dados) {
+    const { descricao, valor, tipo, data, categoria_id } = dados;
+
+   await validarTransacao(descricao, valor, tipo, categoria_id);
 
     try {
         return await transacaoRepository.criar(dados);
@@ -38,23 +42,7 @@ async function listarTodas() {
 async function atualizar(id,dados) {
     const { descricao, valor, tipo, data, categoria_id} = dados;
 
-    if(descricao.trim() === ""){
-        throw new Error("Descrição inválida");
-    }
-
-    if(valor <= 0){
-        throw new Error("Valor deve ser positivo")
-    }
-
-    if(!['receita','despesa'].includes(tipo)){
-        throw new Error("Tipo inválido");
-    }
-
-    const categoria = await categoriaRepository.buscarPorId(categoria_id);
-
-    if(!categoria){
-        throw new Error("Categoria não encontrada");
-    }
+    await validarTransacao(descricao, valor, tipo, categoria_id);
 
     try {
         const transacaoAtualizada = await transacaoRepository.atualizar(id,dados);
