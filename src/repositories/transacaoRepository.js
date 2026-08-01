@@ -24,4 +24,39 @@ async function criar(dados){
     }
 }
 
-module.exports = { buscarTodas, criar };
+async function atualizar(id,dados){
+    const { descricao, valor, tipo, data, categoria_id } = dados;
+
+    try {
+        const [resultado] = await pool.query('UPDATE transacoes SET descricao = ?, valor = ?, tipo = ?, data = ?, categoria_id = ? WHERE id = ?', [descricao,valor,tipo,data,categoria_id,id]);
+        
+        if(resultado.affectedRows === 0){
+            return null;
+        }
+
+        return { id: Number(id), descricao, valor, tipo, data, categoria_id};
+    }
+    catch(error) {
+        console.error("Erro ao atualizar transação", error);
+        throw error;
+    }
+
+}
+
+async function excluir(id) {
+    try {
+        const [resultado] = await pool.query('DELETE FROM transacoes WHERE id = ?', [id]);
+        
+        if(resultado.affectedRows === 0){
+            return null;
+        }
+
+        return Number(id);
+    }
+    catch(error) {
+        console.error("Erro ao excluir transação", error);
+        throw error;
+    }
+}
+
+module.exports = { buscarTodas, criar, atualizar, excluir };

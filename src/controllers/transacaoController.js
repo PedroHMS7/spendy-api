@@ -26,4 +26,41 @@ async function criar(req,res) {
     }
 }
 
-module.exports = { repassaTodos,criar }
+async function atualizar(req,res) {
+    const dados = req.body;
+    const id = Number(req.params.id);
+
+    try {
+        const transacaoAtualizada = await transacaoService.atualizar(id,dados);
+        return res.status(200).json(transacaoAtualizada);
+    }
+    catch(error) {
+        console.error("Erro ao atualizar transação", error);
+        
+        if(error.message === "Transação não encontrada"){
+            return res.status(404).json({ erro: error.message });
+        }
+
+        return res.status(400).json({ erro: error.message });
+    }
+}
+
+async function excluir(req,res) {
+    const id = Number(req.params.id);
+
+    try {
+        const transacaoExcluida = await transacaoService.excluir(id);
+        return res.status(204).json(transacaoExcluida);
+    }
+    catch(error) {
+        console.error("Erro ao excluir transação", error);
+        
+        if(error.message === "Transação não encontrada"){
+            return res.status(404).json({ erro: error.message });
+        }
+
+        return res.status(400).json({ erro: error.message });
+    }
+}
+
+module.exports = { repassaTodos, criar, atualizar, excluir }
