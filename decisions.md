@@ -27,3 +27,11 @@ para evitar SQL Injection.
 Unifiquei a validação duplicada de `criar` e `atualizar` numa função
 `validar(nome, tipo)` única. Retestei os dois endpoints (nome vazio,
 tipo inválido) para confirmar que o comportamento externo não mudou.
+
+## CRUD de transações completo (com relacionamento)
+GET, POST, PUT, DELETE funcionando para transações, com foreign key para
+categorias. O Service de transações valida se a categoria referenciada
+existe (via categoriaRepository.buscarPorId) antes de criar ou atualizar,
+evitando que o erro de constraint do banco vaze como mensagem técnica
+para o cliente da API.
+
