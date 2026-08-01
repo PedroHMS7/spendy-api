@@ -35,3 +35,9 @@ existe (via categoriaRepository.buscarPorId) antes de criar ou atualizar,
 evitando que o erro de constraint do banco vaze como mensagem técnica
 para o cliente da API.
 
+## Refactor: validação de transação extraída
+Unifiquei a validação duplicada de `criar` e `atualizar` em
+`validarTransacao(descricao, valor, tipo, categoria_id)`, incluindo a
+checagem assíncrona de categoria existente. Retestei os 4 casos de
+validação (descrição vazia, valor negativo, tipo inválido, categoria
+inexistente) via Postman para confirmar que o comportamento não mudou.
