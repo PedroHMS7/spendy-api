@@ -11,6 +11,17 @@ async function buscarTodas() {
     }
 }
 
+async function buscarPorId(id) {
+    try {
+        const [linhas] = await pool.query('SELECT * FROM categorias WHERE id = ?', [id]);
+        return linhas[0];
+    }
+    catch(error) {
+        console.error("Erro ao buscar por ID", error);
+        throw error;
+    }
+}
+
 async function criar(nome,tipo) {
     try {
         const [resultado] = await pool.query('INSERT INTO categorias (nome, tipo) VALUES (?, ?)', [nome, tipo]);
@@ -57,4 +68,4 @@ async function excluir(id) {
 }
 
 
-module.exports = {buscarTodas,criar,atualizar,excluir};
+module.exports = { buscarTodas, criar, atualizar, excluir, buscarPorId };
