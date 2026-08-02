@@ -35,8 +35,8 @@ async function criar(dados) {
     }
 }
 
-async function listarTodas() {
-    return await transacaoRepository.buscarTodas();
+async function listarTodas(tipo) {
+    return await transacaoRepository.buscarTodas(tipo);
 }
 
 async function atualizar(id,dados) {

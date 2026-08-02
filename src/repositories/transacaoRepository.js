@@ -1,42 +1,56 @@
 const pool = require("../config/database");
 
-async function buscarTodas(){
+async function buscarTodas(tipo) {  
     try {
-        const [linhas] = await pool.query('SELECT * FROM transacoes');
+
+        let query;
+        let parametros;
+
+        if (tipo === 'receita' || tipo === 'despesa') {
+           query = 'SELECT * FROM transacoes WHERE tipo = ?';
+           parametros = [tipo];
+        }
+        else {
+           query = 'SELECT * FROM transacoes';
+           parametros = [];
+        }
+
+        const [linhas] = await pool.query(query, parametros);
         return linhas.map(linha => ({ ...linha, valor: Number(linha.valor) }));
-    } 
-    catch(error){
+
+    }
+    catch (error) {
         console.error("Erro ao buscar transação", error);
         throw error;
     }
 }
 
-async function criar(dados){
-    const { descricao, valor, tipo, data, categoria_id} = dados;
+async function criar(dados) {
+    const { descricao, valor, tipo, data, categoria_id } = dados;
 
     try {
-        const [resultado] = await pool.query('INSERT INTO transacoes (descricao, valor, tipo, data, categoria_id) VALUES (?,?,?,?,?)',[descricao, valor, tipo, data, categoria_id]);
+        const [resultado] = await pool.query('INSERT INTO transacoes (descricao, valor, tipo, data, categoria_id) VALUES (?,?,?,?,?)', [descricao, valor, tipo, data, categoria_id]);
         return { id: resultado.insertId, descricao, valor, tipo, data, categoria_id };
     }
-    catch(error) {
+    catch (error) {
         console.error("Erro ao criar transação", error);
         throw error;
     }
 }
 
-async function atualizar(id,dados){
+async function atualizar(id, dados) {
     const { descricao, valor, tipo, data, categoria_id } = dados;
 
     try {
-        const [resultado] = await pool.query('UPDATE transacoes SET descricao = ?, valor = ?, tipo = ?, data = ?, categoria_id = ? WHERE id = ?', [descricao,valor,tipo,data,categoria_id,id]);
-        
-        if(resultado.affectedRows === 0){
+        const [resultado] = await pool.query('UPDATE transacoes SET descricao = ?, valor = ?, tipo = ?, data = ?, categoria_id = ? WHERE id = ?', [descricao, valor, tipo, data, categoria_id, id]);
+
+        if (resultado.affectedRows === 0) {
             return null;
         }
 
-        return { id: Number(id), descricao, valor, tipo, data, categoria_id};
+        return { id: Number(id), descricao, valor, tipo, data, categoria_id };
     }
-    catch(error) {
+    catch (error) {
         console.error("Erro ao atualizar transação", error);
         throw error;
     }
@@ -46,14 +60,14 @@ async function atualizar(id,dados){
 async function excluir(id) {
     try {
         const [resultado] = await pool.query('DELETE FROM transacoes WHERE id = ?', [id]);
-        
-        if(resultado.affectedRows === 0){
+
+        if (resultado.affectedRows === 0) {
             return null;
         }
 
         return Number(id);
     }
-    catch(error) {
+    catch (error) {
         console.error("Erro ao excluir transação", error);
         throw error;
     }

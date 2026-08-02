@@ -1,16 +1,16 @@
 const transacaoService = require('../services/transacaoService');
 
 async function repassaTodos(req,res) {
+    const {tipo} = req.query;
+
     try {
-        const transacoes = await transacaoService.listarTodas();
+        const transacoes = await transacaoService.listarTodas(tipo);
         return res.status(200).json(transacoes);
     }
     catch(error) {
         console.error("Erro ao buscar transação", error);
-            
         return res.status(500).json({ erro: "Erro ao buscar transações"});
     }
-
 }
 
 async function criar(req,res) {
