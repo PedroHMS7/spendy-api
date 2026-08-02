@@ -1,23 +1,30 @@
 const pool = require("../config/database");
 
-async function buscarTodas(tipo) {  
+async function buscarTodas(filtros) {  
+    const { tipo, categoria_id } = filtros;
+
     try {
-
+        let condicoes = [];
+        let parametros = [];
         let query;
-        let parametros;
 
-        if (tipo === 'receita' || tipo === 'despesa') {
-           query = 'SELECT * FROM transacoes WHERE tipo = ?';
-           parametros = [tipo];
+        if (tipo) {
+            condicoes.push('tipo = ?');
+            parametros.push(tipo);
+        }
+        if (categoria_id) {
+            condicoes.push('categoria_id = ?');
+            parametros.push(categoria_id);
+        }      
+        if(condicoes.length > 0){
+            query = 'SELECT * FROM transacoes WHERE ' + condicoes.join(' AND ');
         }
         else {
-           query = 'SELECT * FROM transacoes';
-           parametros = [];
+            query = 'SELECT * FROM transacoes';
         }
 
         const [linhas] = await pool.query(query, parametros);
         return linhas.map(linha => ({ ...linha, valor: Number(linha.valor) }));
-
     }
     catch (error) {
         console.error("Erro ao buscar transação", error);

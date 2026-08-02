@@ -1,10 +1,10 @@
 const transacaoService = require('../services/transacaoService');
 
 async function repassaTodos(req,res) {
-    const {tipo} = req.query;
+    const filtros = req.query;
 
     try {
-        const transacoes = await transacaoService.listarTodas(tipo);
+        const transacoes = await transacaoService.listarTodas(filtros);
         return res.status(200).json(transacoes);
     }
     catch(error) {
