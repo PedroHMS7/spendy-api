@@ -1,12 +1,14 @@
 const pool = require("../config/database");
 
-async function buscarTodas(filtros) {  
+async function buscarTodas(filtros, page, limit) {  
     const { tipo, categoria_id } = filtros;
 
     try {
         let condicoes = [];
         let parametros = [];
         let query;
+
+        let offset = (page - 1) * limit;
 
         if (tipo) {
             condicoes.push('tipo = ?');
@@ -22,6 +24,9 @@ async function buscarTodas(filtros) {
         else {
             query = 'SELECT * FROM transacoes';
         }
+
+        query += ' LIMIT ? OFFSET ?';
+        parametros.push(limit, offset);
 
         const [linhas] = await pool.query(query, parametros);
         return linhas.map(linha => ({ ...linha, valor: Number(linha.valor) }));

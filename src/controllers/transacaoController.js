@@ -2,9 +2,13 @@ const transacaoService = require('../services/transacaoService');
 
 async function repassaTodos(req,res) {
     const filtros = req.query;
+    const { page, limit } = req.query;
 
+    const paginaAtual = Number(page) || 1;
+    const limitePorPagina = Number(limit) || 10;
+    
     try {
-        const transacoes = await transacaoService.listarTodas(filtros);
+        const transacoes = await transacaoService.listarTodas(filtros, paginaAtual, limitePorPagina);
         return res.status(200).json(transacoes);
     }
     catch(error) {
