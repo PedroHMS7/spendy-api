@@ -41,3 +41,9 @@ Unifiquei a validação duplicada de `criar` e `atualizar` em
 checagem assíncrona de categoria existente. Retestei os 4 casos de
 validação (descrição vazia, valor negativo, tipo inválido, categoria
 inexistente) via Postman para confirmar que o comportamento não mudou.
+
+## Filtros combináveis em GET /transacoes
+Implementei filtro por `tipo` e `categoria_id`, combináveis entre si,
+usando query dinâmica: array de condições montado condicionalmente
+(`if` independente por filtro) e unido com `.join(' AND ')`. Evita
+escrever uma query fixa para cada uma das 4 combinações possíveis.
