@@ -47,3 +47,6 @@ Implementei filtro por `tipo` e `categoria_id`, combináveis entre si,
 usando query dinâmica: array de condições montado condicionalmente
 (`if` independente por filtro) e unido com `.join(' AND ')`. Evita
 escrever uma query fixa para cada uma das 4 combinações possíveis.
+
+## Paginação combinável com filtros
+Adicionei `page`/`limit` via query params, calculando `offset = (page - 1) * limit`. Reaproveitei a mesma estrutura de query dinâmica dos filtros: LIMIT/OFFSET são adicionados incondicionalmente, sempre parametrizados (?), depois de resolver os filtros opcionais. Valores padrão: page=1, limit=10, aplicados no Controller com Number(...) || fallback.
