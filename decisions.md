@@ -50,3 +50,10 @@ escrever uma query fixa para cada uma das 4 combinações possíveis.
 
 ## Paginação combinável com filtros
 Adicionei `page`/`limit` via query params, calculando `offset = (page - 1) * limit`. Reaproveitei a mesma estrutura de query dinâmica dos filtros: LIMIT/OFFSET são adicionados incondicionalmente, sempre parametrizados (?), depois de resolver os filtros opcionais. Valores padrão: page=1, limit=10, aplicados no Controller com Number(...) || fallback.
+
+## Autenticação: registro e login
+Senhas nunca são armazenadas em texto puro, são sempre hasheadas com bcrypt antes de salvar. Login usa bcrypt.compare para validar a senha
+digitada contra o hash salvo. Login e registro sempre retornam a mesma
+mensagem genérica ("Email ou senha inválidos") em caso de falha, para não
+revelar se o problema foi o email não existir ou a senha estar errada
+(evita enumeração de usuários cadastrados).
