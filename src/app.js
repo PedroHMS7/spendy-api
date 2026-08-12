@@ -11,4 +11,8 @@ const transacaoRoutes = require('./routes/transacaoRoutes');
 
 app.use(transacaoRoutes);
 
+const usuarioRoutes = require('./routes/usuarioRoutes');
+
+app.use(usuarioRoutes);
+
 module.exports = app
