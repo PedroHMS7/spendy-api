@@ -5,10 +5,10 @@ const autenticar = require('../middlewares/autenticacao');
 
 router.get('/transacoes', autenticar, transacaoController.repassaTodos);
 
-router.post('/transacoes', transacaoController.criar);
+router.post('/transacoes', autenticar,transacaoController.criar);
 
-router.put('/transacoes/:id', transacaoController.atualizar);
+router.put('/transacoes/:id', autenticar,transacaoController.atualizar);
 
-router.delete('/transacoes/:id', transacaoController.excluir);
+router.delete('/transacoes/:id', autenticar,transacaoController.excluir);
 
 module.exports = router;

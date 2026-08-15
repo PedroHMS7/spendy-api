@@ -3,12 +3,13 @@ const transacaoService = require('../services/transacaoService');
 async function repassaTodos(req,res) {
     const filtros = req.query;
     const { page, limit } = req.query;
+    const usuario_id = req.usuario.id;
 
     const paginaAtual = Number(page) || 1;
     const limitePorPagina = Number(limit) || 10;
     
     try {
-        const transacoes = await transacaoService.listarTodas(filtros, paginaAtual, limitePorPagina);
+        const transacoes = await transacaoService.listarTodas(filtros, paginaAtual, limitePorPagina, usuario_id);
         return res.status(200).json(transacoes);
     }
     catch(error) {
@@ -19,9 +20,10 @@ async function repassaTodos(req,res) {
 
 async function criar(req,res) {
     const dados = req.body;
+    const usuario_id = req.usuario.id;
 
     try {
-        const transacoes = await transacaoService.criar(dados);
+        const transacoes = await transacaoService.criar(dados,usuario_id);
         return res.status(201).json(transacoes); 
     }
     catch(error) {
@@ -33,9 +35,10 @@ async function criar(req,res) {
 async function atualizar(req,res) {
     const dados = req.body;
     const id = Number(req.params.id);
+    const usuario_id = req.usuario.id;
 
     try {
-        const transacaoAtualizada = await transacaoService.atualizar(id,dados);
+        const transacaoAtualizada = await transacaoService.atualizar(id,dados,usuario_id);
         return res.status(200).json(transacaoAtualizada);
     }
     catch(error) {
@@ -51,10 +54,11 @@ async function atualizar(req,res) {
 
 async function excluir(req,res) {
     const id = Number(req.params.id);
+    const usuario_id = req.usuario.id;
 
     try {
-        const transacaoExcluida = await transacaoService.excluir(id);
-        return res.status(204).json(transacaoExcluida);
+        const transacaoExcluida = await transacaoService.excluir(id,usuario_id);
+        return res.status(204).send();
     }
     catch(error) {
         console.error("Erro ao excluir transação", error);

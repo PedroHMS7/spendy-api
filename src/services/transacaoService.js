@@ -1,7 +1,7 @@
 const transacaoRepository = require('../repositories/transacaoRepository');
 const categoriaRepository = require('../repositories/categoriaRepository');
 
-async function validarTransacao(descricao, valor, tipo, categoria_id) {
+async function validarTransacao(descricao, valor, tipo, categoria_id, usuario_id) {
     if(descricao.trim() === ""){
         throw new Error("Descrição inválida");
     }
@@ -14,20 +14,20 @@ async function validarTransacao(descricao, valor, tipo, categoria_id) {
         throw new Error("Tipo inválido");
     }
 
-    const categoria = await categoriaRepository.buscarPorId(categoria_id);
+    const categoria = await categoriaRepository.buscarPorId(categoria_id, usuario_id);
 
     if(!categoria){
         throw new Error("Categoria não encontrada");
     }
 }
 
-async function criar(dados) {
+async function criar(dados, usuario_id) {
     const { descricao, valor, tipo, data, categoria_id } = dados;
 
-   await validarTransacao(descricao, valor, tipo, categoria_id);
+   await validarTransacao(descricao, valor, tipo, categoria_id, usuario_id);
 
     try {
-        return await transacaoRepository.criar(dados);
+        return await transacaoRepository.criar(dados, usuario_id);
     }
     catch(error){
         console.error("Erro ao criar transação", error);
@@ -35,17 +35,17 @@ async function criar(dados) {
     }
 }
 
-async function listarTodas(filtros, page, limit) {
-    return await transacaoRepository.buscarTodas(filtros,page,limit);
+async function listarTodas(filtros, page, limit, usuario_id) {
+    return await transacaoRepository.buscarTodas(filtros,page,limit,usuario_id);
 }
 
-async function atualizar(id,dados) {
+async function atualizar(id,dados,usuario_id) {
     const { descricao, valor, tipo, data, categoria_id} = dados;
 
-    await validarTransacao(descricao, valor, tipo, categoria_id);
+    await validarTransacao(descricao, valor, tipo, categoria_id, usuario_id);
 
     try {
-        const transacaoAtualizada = await transacaoRepository.atualizar(id,dados);
+        const transacaoAtualizada = await transacaoRepository.atualizar(id,dados,usuario_id);
         
         if(transacaoAtualizada === null){
             throw new Error("Transação não encontrada");
@@ -59,9 +59,9 @@ async function atualizar(id,dados) {
     }
 }
 
-async function excluir(id) {
+async function excluir(id, usuario_id) {
     try {
-        const transacaoExcluida = await transacaoRepository.excluir(id); 
+        const transacaoExcluida = await transacaoRepository.excluir(id, usuario_id); 
 
         if(!transacaoExcluida) {
             throw new Error("Transação não encontrada");
