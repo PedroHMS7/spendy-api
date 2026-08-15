@@ -78,3 +78,11 @@ receber/filtrar por `usuario_id`, mesmo padrão de categorias. Diferencial:
 pertence ao mesmo usuário (via `categoriaRepository.buscarPorId(id,
 usuarioId)`), impedindo que uma transação referencie categoria de outro
 usuário.
+
+## Teste de isolamento entre usuários
+Validado com 2 contas reais: listagens vazias para
+usuário sem dados próprios; PUT/DELETE em recurso de outro usuário
+retorna 404 (categoria) ou é bloqueado na validação de categoria
+referenciada (transação), nunca revelando que o recurso pertence a
+outra pessoa. Dados do usuário original permanecem intactos após
+tentativas de acesso indevido.
