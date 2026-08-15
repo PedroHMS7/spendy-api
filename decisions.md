@@ -63,3 +63,10 @@ Middleware `autenticar` extrai o token do header `Authorization: Bearer
 <token>`, valida com jwt.verify, e anexa o payload decodificado em
 `req.usuario`. Testado nos dois cenários: sem token (401, "Token não
 fornecido") e com token válido (libera a requisição via next()).
+
+## Isolamento de categorias por usuário
+Repository, Service, Controller e Rotas de categorias refatorados para
+receber/filtrar por `usuario_id`. Todas as rotas protegidas pelo
+middleware `autenticar`. UPDATE/DELETE checam `id AND usuario_id`
+juntos no WHERE isso impede que um usuário edite/exclua recurso de
+outro.
