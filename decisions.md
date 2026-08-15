@@ -57,3 +57,9 @@ digitada contra o hash salvo. Login e registro sempre retornam a mesma
 mensagem genérica ("Email ou senha inválidos") em caso de falha, para não
 revelar se o problema foi o email não existir ou a senha estar errada
 (evita enumeração de usuários cadastrados).
+
+## Middleware de autenticação
+Middleware `autenticar` extrai o token do header `Authorization: Bearer
+<token>`, valida com jwt.verify, e anexa o payload decodificado em
+`req.usuario`. Testado nos dois cenários: sem token (401, "Token não
+fornecido") e com token válido (libera a requisição via next()).
