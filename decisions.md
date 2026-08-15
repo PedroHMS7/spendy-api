@@ -70,3 +70,11 @@ receber/filtrar por `usuario_id`. Todas as rotas protegidas pelo
 middleware `autenticar`. UPDATE/DELETE checam `id AND usuario_id`
 juntos no WHERE isso impede que um usuário edite/exclua recurso de
 outro.
+
+## Isolamento de transações por usuário
+Repository, Service, Controller e Rotas de transações refatorados para
+receber/filtrar por `usuario_id`, mesmo padrão de categorias. Diferencial:
+`validarTransacao` agora confirma que a categoria referenciada também
+pertence ao mesmo usuário (via `categoriaRepository.buscarPorId(id,
+usuarioId)`), impedindo que uma transação referencie categoria de outro
+usuário.
