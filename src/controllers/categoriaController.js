@@ -1,8 +1,10 @@
 const categoriaService = require('../services/categoriaService');
 
 async function repassaTodos(req,res) {
+    const usuario_id = req.usuario.id;
+
     try { 
-        const categorias = await categoriaService.listarTodas();
+        const categorias = await categoriaService.listarTodas(usuario_id);
         return res.status(200).json(categorias);
     }
     catch(err) {
@@ -13,9 +15,10 @@ async function repassaTodos(req,res) {
 
 async function criar(req,res) {
     const dados = req.body;
+    const usuario_id = req.usuario.id;
 
     try {
-        const resultado = await categoriaService.criar(dados);
+        const resultado = await categoriaService.criar(dados,usuario_id);
         return res.status(201).json(resultado);
     }
     catch(error) {
@@ -27,9 +30,10 @@ async function criar(req,res) {
 async function atualizar(req,res) {
     const dados = req.body;
     const id = Number(req.params.id);
+    const usuario_id = req.usuario.id;
 
     try {
-        const categoriaAtualizada = await categoriaService.atualizar(id,dados);
+        const categoriaAtualizada = await categoriaService.atualizar(id,dados,usuario_id);
         return res.status(200).json(categoriaAtualizada);
     }
     catch(error) {
@@ -45,9 +49,10 @@ async function atualizar(req,res) {
 
 async function excluir(req,res) {
     const id = Number(req.params.id);
+    const usuario_id = req.usuario.id;
 
     try {
-        await categoriaService.excluir(id);
+        await categoriaService.excluir(id,usuario_id);
         return res.status(204).send();
     }
     catch(error) {

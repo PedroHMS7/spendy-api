@@ -1,8 +1,8 @@
 const pool = require("../config/database");
 
-async function buscarTodas() {
+async function buscarTodas(usuario_id) {
     try {
-        const [linhas] = await pool.query('SELECT * FROM categorias');
+        const [linhas] = await pool.query('SELECT * FROM categorias WHERE usuario_id = ?', [usuario_id]);
         return linhas;
     }
     catch (error) {
@@ -11,9 +11,9 @@ async function buscarTodas() {
     }
 }
 
-async function buscarPorId(id) {
+async function buscarPorId(id,usuario_id) {
     try {
-        const [linhas] = await pool.query('SELECT * FROM categorias WHERE id = ?', [id]);
+        const [linhas] = await pool.query('SELECT * FROM categorias WHERE id = ? AND usuario_id = ?', [id,usuario_id]);
         return linhas[0];
     }
     catch(error) {
@@ -22,10 +22,10 @@ async function buscarPorId(id) {
     }
 }
 
-async function criar(nome,tipo) {
+async function criar(nome,tipo,usuario_id) {
     try {
-        const [resultado] = await pool.query('INSERT INTO categorias (nome, tipo) VALUES (?, ?)', [nome, tipo]);
-        return { id: resultado.insertId, nome, tipo };
+        const [resultado] = await pool.query('INSERT INTO categorias (nome, tipo, usuario_id) VALUES (?, ?, ?)', [nome, tipo, usuario_id]);
+        return { id: resultado.insertId, nome, tipo, usuario_id };
     }
     catch (error){
         console.error("Erro ao criar", error)
@@ -33,11 +33,11 @@ async function criar(nome,tipo) {
     }
 }
 
-async function atualizar(id,dados) {
+async function atualizar(id,dados,usuario_id) {
     const { nome, tipo } = dados;
 
     try {
-        const [resultado] = await pool.query('UPDATE categorias SET nome = ?, tipo = ?  WHERE id = ?', [nome,tipo,id]);
+        const [resultado] = await pool.query('UPDATE categorias SET nome = ?, tipo = ?  WHERE id = ? AND usuario_id = ?', [nome,tipo,id,usuario_id]);
 
         if(resultado.affectedRows === 0){
             return null;
@@ -51,9 +51,9 @@ async function atualizar(id,dados) {
     }
 }
 
-async function excluir(id) {
+async function excluir(id,usuario_id) {
     try {
-        const [categoriaExcluida] = await pool.query('DELETE FROM categorias WHERE id = ?', [id]);
+        const [categoriaExcluida] = await pool.query('DELETE FROM categorias WHERE id = ? AND usuario_id = ?', [id,usuario_id]);
 
         if(categoriaExcluida.affectedRows === 0){
             return null;
