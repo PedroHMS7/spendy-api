@@ -1,6 +1,9 @@
-const jwt = require('jsonwebtoken')
+/// <reference path="../types/express.d.ts" />
+import { Request, Response, NextFunction } from 'express'
+import jwt from 'jsonwebtoken';
 
-function autenticar(req, res, next) {
+
+function autenticar(req: Request, res: Response, next: NextFunction) {
     const authHeader = req.headers.authorization;
 
     if(!authHeader){
