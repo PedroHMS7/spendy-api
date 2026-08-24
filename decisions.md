@@ -93,3 +93,14 @@ para o TypeScript checar os tipos reais, `require` sozinho sempre tipa
 como `any`). Erro de tipo encontrado: `port` esperava `number`, mas
 `process.env.DB_PORT || 3306` resultava em `string | number` (env vars
 são sempre string | undefined). Corrigido com `Number(...)`.
+
+## Migração TypeScript: middlewares/autenticacao.ts
+Parâmetros `req`, `res`, `next` precisaram de tipagem explícita
+(Request, Response, NextFunction), diferente de `pool`, que teve tipo
+inferido automaticamente. `req.usuario` não existe no tipo `Request`
+padrão (é propriedade customizada do projeto), resolvido com module
+augmentation em `src/types/express.d.ts`.
+
+O watcher do ts-node-dev não detectou essa extensão automaticamente.
+Resolvido com `/// <reference path="../types/express.d.ts" />` no
+topo do arquivo.
