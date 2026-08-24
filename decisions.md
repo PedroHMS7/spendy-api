@@ -86,3 +86,10 @@ retorna 404 (categoria) ou é bloqueado na validação de categoria
 referenciada (transação), nunca revelando que o recurso pertence a
 outra pessoa. Dados do usuário original permanecem intactos após
 tentativas de acesso indevido.
+
+## Migração TypeScript: config/database.ts
+Primeiro arquivo migrado. `require` foi trocado por `import` (necessário
+para o TypeScript checar os tipos reais, `require` sozinho sempre tipa
+como `any`). Erro de tipo encontrado: `port` esperava `number`, mas
+`process.env.DB_PORT || 3306` resultava em `string | number` (env vars
+são sempre string | undefined). Corrigido com `Number(...)`.
