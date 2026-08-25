@@ -1,8 +1,8 @@
-const usuarioRepository = require('../repositories/usuarioRepository');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+import usuarioRepository = require('../repositories/usuarioRepository');
+import bcrypt = require('bcrypt');
+import jwt = require('jsonwebtoken');
 
-async function registrar(nome, email, senha) {
+async function registrar(nome : string, email : string, senha : string) {
     
     if(nome.trim() === ""){
         throw new Error("Nome inválido")
@@ -34,7 +34,7 @@ async function registrar(nome, email, senha) {
     }
 } 
 
-async function login(email, senha) {
+async function login(email : string, senha : string) {
     
     const usuarioExiste = await usuarioRepository.buscarPorEmail(email);
     
@@ -49,7 +49,7 @@ async function login(email, senha) {
     }
     
     try {
-        const token = jwt.sign({ id: usuarioExiste.id, email: usuarioExiste.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: usuarioExiste.id, email: usuarioExiste.email }, process.env.JWT_SECRET!, { expiresIn: '1h' });
         return token;
     }
     catch(error) {
@@ -58,4 +58,4 @@ async function login(email, senha) {
     }
 }
 
-module.exports = { registrar, login }
+export = { registrar, login }

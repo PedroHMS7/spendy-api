@@ -23,4 +23,4 @@ async function buscarPorEmail(email : string) {
     }
 }
 
-module.exports = { criar, buscarPorEmail }
+export = { criar, buscarPorEmail }

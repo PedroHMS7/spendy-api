@@ -69,4 +69,4 @@ async function excluir(id : number, usuario_id : number) {
 }
 
 
-module.exports = { buscarTodas, criar, atualizar, excluir, buscarPorId };
+export = { buscarTodas, criar, atualizar, excluir, buscarPorId };
