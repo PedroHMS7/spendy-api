@@ -1,10 +1,10 @@
-const categoriaRepository = require('../repositories/categoriaRepository');
+import categoriaRepository = require('../repositories/categoriaRepository');
 
-async function listarTodas(usuario_id) {
+async function listarTodas(usuario_id : number) {
     return await categoriaRepository.buscarTodas(usuario_id);
 }
 
-function validarCategoria(nome,tipo){
+function validarCategoria(nome : string, tipo : string){
     if(nome.trim() === "") {
         throw new Error("Nome inválido");
     }
@@ -14,7 +14,7 @@ function validarCategoria(nome,tipo){
     }
 }
 
-async function criar(dados,usuario_id) {
+async function criar(dados : {nome : string, tipo : string}, usuario_id : number) {
     const {nome,tipo} = dados;
 
     validarCategoria(nome,tipo);
@@ -29,7 +29,7 @@ async function criar(dados,usuario_id) {
     }
 }
 
-async function atualizar(id,dados,usuario_id) {
+async function atualizar(id : number, dados : {nome : string, tipo : string}, usuario_id : number) {
     const { nome, tipo } = dados;
 
     validarCategoria(nome,tipo);
@@ -49,7 +49,7 @@ async function atualizar(id,dados,usuario_id) {
     }
 }
 
-async function excluir(id,usuario_id) {
+async function excluir(id : number, usuario_id : number) {
     try {
         const categoriaExcluida = await categoriaRepository.excluir(id,usuario_id);
         
@@ -65,4 +65,4 @@ async function excluir(id,usuario_id) {
     }
 }
 
-module.exports = {listarTodas,criar,atualizar,excluir};
+export = {listarTodas,criar,atualizar,excluir};
