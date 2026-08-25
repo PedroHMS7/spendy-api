@@ -1,9 +1,11 @@
-const transacaoService = require('../services/transacaoService');
+/// <reference path="../types/express.d.ts" />
+import transacaoService = require('../services/transacaoService');
+import { Request, Response, NextFunction } from 'express'
 
-async function repassaTodos(req,res) {
-    const filtros = req.query;
-    const { page, limit } = req.query;
-    const usuario_id = req.usuario.id;
+async function repassaTodos(req : Request, res : Response) {
+    const filtros : { tipo?: string, categoria_id?: number } = req.query;
+    const { page , limit } = req.query;
+    const usuario_id = (req.usuario as { id: number }).id;
 
     const paginaAtual = Number(page) || 1;
     const limitePorPagina = Number(limit) || 10;
@@ -18,9 +20,9 @@ async function repassaTodos(req,res) {
     }
 }
 
-async function criar(req,res) {
+async function criar(req : Request, res : Response) {
     const dados = req.body;
-    const usuario_id = req.usuario.id;
+    const usuario_id = (req.usuario as { id: number }).id;
 
     try {
         const transacoes = await transacaoService.criar(dados,usuario_id);
@@ -32,10 +34,10 @@ async function criar(req,res) {
     }
 }
 
-async function atualizar(req,res) {
+async function atualizar(req : Request, res : Response) {
     const dados = req.body;
     const id = Number(req.params.id);
-    const usuario_id = req.usuario.id;
+    const usuario_id = (req.usuario as { id: number }).id;
 
     try {
         const transacaoAtualizada = await transacaoService.atualizar(id,dados,usuario_id);
@@ -52,9 +54,9 @@ async function atualizar(req,res) {
     }
 }
 
-async function excluir(req,res) {
+async function excluir(req : Request, res : Response) {
     const id = Number(req.params.id);
-    const usuario_id = req.usuario.id;
+    const usuario_id = (req.usuario as { id: number }).id;
 
     try {
         const transacaoExcluida = await transacaoService.excluir(id,usuario_id);
@@ -71,4 +73,4 @@ async function excluir(req,res) {
     }
 }
 
-module.exports = { repassaTodos, criar, atualizar, excluir }
+export = { repassaTodos, criar, atualizar, excluir }
