@@ -1,7 +1,7 @@
-const transacaoRepository = require('../repositories/transacaoRepository');
-const categoriaRepository = require('../repositories/categoriaRepository');
+import transacaoRepository = require('../repositories/transacaoRepository');
+import categoriaRepository = require('../repositories/categoriaRepository');
 
-async function validarTransacao(descricao, valor, tipo, categoria_id, usuario_id) {
+async function validarTransacao(descricao : string, valor : number, tipo : string, categoria_id : number, usuario_id : number) {
     if(descricao.trim() === ""){
         throw new Error("Descrição inválida");
     }
@@ -21,7 +21,7 @@ async function validarTransacao(descricao, valor, tipo, categoria_id, usuario_id
     }
 }
 
-async function criar(dados, usuario_id) {
+async function criar(dados : { descricao : string, valor : number, tipo : string, data : string, categoria_id : number}, usuario_id : number) {
     const { descricao, valor, tipo, data, categoria_id } = dados;
 
    await validarTransacao(descricao, valor, tipo, categoria_id, usuario_id);
@@ -35,11 +35,11 @@ async function criar(dados, usuario_id) {
     }
 }
 
-async function listarTodas(filtros, page, limit, usuario_id) {
+async function listarTodas(filtros : { tipo?: string, categoria_id?: number }, page : number, limit : number, usuario_id : number) {
     return await transacaoRepository.buscarTodas(filtros,page,limit,usuario_id);
 }
 
-async function atualizar(id,dados,usuario_id) {
+async function atualizar(id : number, dados : { descricao : string, valor : number, tipo : string, data : string, categoria_id : number}, usuario_id : number) {
     const { descricao, valor, tipo, data, categoria_id} = dados;
 
     await validarTransacao(descricao, valor, tipo, categoria_id, usuario_id);
@@ -59,7 +59,7 @@ async function atualizar(id,dados,usuario_id) {
     }
 }
 
-async function excluir(id, usuario_id) {
+async function excluir(id : number, usuario_id : number) {
     try {
         const transacaoExcluida = await transacaoRepository.excluir(id, usuario_id); 
 
@@ -75,4 +75,4 @@ async function excluir(id, usuario_id) {
     }
 } 
 
-module.exports = { criar, listarTodas, atualizar, excluir }
+export = { criar, listarTodas, atualizar, excluir }
