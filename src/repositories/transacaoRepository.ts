@@ -1,6 +1,7 @@
-const pool = require("../config/database");
+import pool = require('../config/database');
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
 
-async function buscarTodas(filtros, page, limit, usuario_id) {  
+async function buscarTodas(filtros : {tipo?: string, categoria_id?: number}, page : number, limit : number, usuario_id : number) {  
     const { tipo, categoria_id } = filtros;
 
     try {
@@ -32,7 +33,7 @@ async function buscarTodas(filtros, page, limit, usuario_id) {
         query += ' LIMIT ? OFFSET ?';
         parametros.push(limit, offset);
 
-        const [linhas] = await pool.query(query, parametros);
+        const [linhas] = await pool.query<RowDataPacket[]>(query, parametros);
         return linhas.map(linha => ({ ...linha, valor: Number(linha.valor) }));
     }
     catch (error) {
@@ -41,11 +42,11 @@ async function buscarTodas(filtros, page, limit, usuario_id) {
     }
 }
 
-async function criar(dados,usuario_id) {
+async function criar(dados : {descricao : string, valor : number, tipo : string, data : string, categoria_id : number }, usuario_id : number) {
     const { descricao, valor, tipo, data, categoria_id } = dados;
 
     try {
-        const [resultado] = await pool.query('INSERT INTO transacoes (descricao, valor, tipo, data, categoria_id,usuario_id) VALUES (?,?,?,?,?,?)', [descricao, valor, tipo, data, categoria_id, usuario_id]);
+        const [resultado] = await pool.query<ResultSetHeader>('INSERT INTO transacoes (descricao, valor, tipo, data, categoria_id,usuario_id) VALUES (?,?,?,?,?,?)', [descricao, valor, tipo, data, categoria_id, usuario_id]);
         return { id: resultado.insertId, descricao, valor, tipo, data, categoria_id, usuario_id };
     }
     catch (error) {
@@ -54,11 +55,11 @@ async function criar(dados,usuario_id) {
     }
 }
 
-async function atualizar(id, dados, usuario_id) {
+async function atualizar(id : number, dados : {descricao : string, valor : number, tipo : string, data : string, categoria_id : number }, usuario_id : number) {
     const { descricao, valor, tipo, data, categoria_id } = dados;
 
     try {
-        const [resultado] = await pool.query('UPDATE transacoes SET descricao = ?, valor = ?, tipo = ?, data = ?, categoria_id = ? WHERE id = ? AND usuario_id = ?', [descricao, valor, tipo, data, categoria_id, id, usuario_id]);
+        const [resultado] = await pool.query<ResultSetHeader>('UPDATE transacoes SET descricao = ?, valor = ?, tipo = ?, data = ?, categoria_id = ? WHERE id = ? AND usuario_id = ?', [descricao, valor, tipo, data, categoria_id, id, usuario_id]);
 
         if (resultado.affectedRows === 0) {
             return null;
@@ -73,9 +74,9 @@ async function atualizar(id, dados, usuario_id) {
 
 }
 
-async function excluir(id, usuario_id) {
+async function excluir(id : number, usuario_id : number) {
     try {
-        const [resultado] = await pool.query('DELETE FROM transacoes WHERE id = ? AND usuario_id = ?', [id, usuario_id]);
+        const [resultado] = await pool.query<ResultSetHeader>('DELETE FROM transacoes WHERE id = ? AND usuario_id = ?', [id, usuario_id]);
 
         if (resultado.affectedRows === 0) {
             return null;
