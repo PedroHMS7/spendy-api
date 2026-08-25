@@ -1,7 +1,9 @@
-const categoriaService = require('../services/categoriaService');
+/// <reference path="../types/express.d.ts" />
+import categoriaService = require('../services/categoriaService');
+import { Request, Response, NextFunction } from 'express'
 
-async function repassaTodos(req,res) {
-    const usuario_id = req.usuario.id;
+async function repassaTodos(req : Request, res : Response) {
+    const usuario_id = (req.usuario as { id: number }).id;
 
     try { 
         const categorias = await categoriaService.listarTodas(usuario_id);
@@ -13,9 +15,9 @@ async function repassaTodos(req,res) {
     }
 }
 
-async function criar(req,res) {
+async function criar(req : Request, res : Response) {
     const dados = req.body;
-    const usuario_id = req.usuario.id;
+    const usuario_id = (req.usuario as { id: number }).id;
 
     try {
         const resultado = await categoriaService.criar(dados,usuario_id);
@@ -27,10 +29,10 @@ async function criar(req,res) {
     }
 }
 
-async function atualizar(req,res) {
+async function atualizar(req : Request, res : Response) {
     const dados = req.body;
     const id = Number(req.params.id);
-    const usuario_id = req.usuario.id;
+    const usuario_id = (req.usuario as { id: number }).id;
 
     try {
         const categoriaAtualizada = await categoriaService.atualizar(id,dados,usuario_id);
@@ -47,9 +49,9 @@ async function atualizar(req,res) {
     }
 }
 
-async function excluir(req,res) {
+async function excluir(req : Request, res : Response) {
     const id = Number(req.params.id);
-    const usuario_id = req.usuario.id;
+    const usuario_id = (req.usuario as { id: number }).id;
 
     try {
         await categoriaService.excluir(id,usuario_id);
@@ -66,4 +68,4 @@ async function excluir(req,res) {
     }
 }
 
-module.exports = {repassaTodos,criar,atualizar,excluir};
+export = {repassaTodos,criar,atualizar,excluir};
