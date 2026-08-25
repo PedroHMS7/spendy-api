@@ -1,6 +1,7 @@
-const usuarioService = require('../services/usuarioService');
+import usuarioService = require('../services/usuarioService');
+import { Request, Response, NextFunction } from 'express'
 
-async function registrar(req,res) {
+async function registrar(req : Request, res : Response) {
     const { nome, email, senha } = req.body;
 
     try {
@@ -18,7 +19,7 @@ async function registrar(req,res) {
     }
 }
 
-async function login(req,res) {
+async function login(req : Request, res : Response) {
     const { email, senha } = req.body;
 
     try {
@@ -31,4 +32,4 @@ async function login(req,res) {
     }
 }
 
-module.exports = { registrar, login }
+export = { registrar, login }

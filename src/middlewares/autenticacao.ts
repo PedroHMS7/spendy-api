@@ -23,4 +23,4 @@ function autenticar(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-module.exports = autenticar;
+export = autenticar;
