@@ -104,3 +104,20 @@ augmentation em `src/types/express.d.ts`.
 O watcher do ts-node-dev não detectou essa extensão automaticamente.
 Resolvido com `/// <reference path="../types/express.d.ts" />` no
 topo do arquivo.
+
+## Migração completa para TypeScript
+Todos os arquivos convertidos de .js para .ts, mantendo strict:false
+(migração gradual).
+
+Padrões recorrentes:
+- `require` sempre tipa como `any`, troquei por `import` (ou
+  `import x = require(...)` quando o módulo exporta via
+  `module.exports`, para não quebrar arquivos ainda não migrados)
+- Variáveis de ambiente são sempre `string | undefined`, portas e
+  secrets precisaram de `Number(...)` ou `as string`
+- Resultado de queries do mysql2 precisa de tipo explícito
+  (`<RowDataPacket[]>` para SELECT, `<ResultSetHeader>` para
+  INSERT/UPDATE/DELETE), senão o TypeScript não sabe qual formato
+  esperar
+- Propriedades customizadas no `Request` (como `req.usuario`) exigem
+  extensão de tipo (module augmentation) em um arquivo `.d.ts` separado
