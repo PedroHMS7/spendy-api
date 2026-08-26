@@ -1,7 +1,8 @@
-const express = require('express');
+import express = require('express');
+import autenticar = require('../middlewares/autenticacao');
+import categoriaController = require('../controllers/categoriaController');
+
 const router = express.Router();
-const categoriaController = require('../controllers/categoriaController');
-const autenticar = require('../middlewares/autenticacao');
 
 router.get('/categorias', autenticar, categoriaController.repassaTodos);
 
@@ -11,4 +12,4 @@ router.put('/categorias/:id', autenticar, categoriaController.atualizar);
 
 router.delete('/categorias/:id', autenticar, categoriaController.excluir);
 
-module.exports = router;
+export = router;
