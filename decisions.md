@@ -121,3 +121,13 @@ Padrões recorrentes:
   esperar
 - Propriedades customizadas no `Request` (como `req.usuario`) exigem
   extensão de tipo (module augmentation) em um arquivo `.d.ts` separado
+
+## Ativação do strict mode
+`strict: true` ativado no tsconfig.json, fechando a migração TypeScript.
+19 erros surgiram, quase todos do mesmo padrão: `catch(error)` trata
+`error` como `unknown` em modo strict (era `any` antes), impedindo
+acesso direto a `.message`. Resolvido criando `src/utils/erro.ts` com
+uma função `errorMessage(error: unknown): string` reutilizável, que
+checa `error instanceof Error` internamente, isso evita repetir essa
+lógica em cada catch. Último erro isolado: `JWT_SECRET` como
+`string | undefined`, resolvido com `!`.
