@@ -13,7 +13,7 @@ function autenticar(req: Request, res: Response, next: NextFunction) {
     const [, token] = authHeader.split(' ');
     
     try {
-        const dados = jwt.verify(token, process.env.JWT_SECRET)
+        const dados = jwt.verify(token, process.env.JWT_SECRET!)
         req.usuario = dados;
         return next();
     }   

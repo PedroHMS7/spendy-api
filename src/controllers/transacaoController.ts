@@ -1,6 +1,7 @@
 /// <reference path="../types/express.d.ts" />
 import transacaoService = require('../services/transacaoService');
 import { Request, Response, NextFunction } from 'express'
+import errorMessage = require('../utils/erro');
 
 async function repassaTodos(req : Request, res : Response) {
     const filtros : { tipo?: string, categoria_id?: number } = req.query;
@@ -30,7 +31,7 @@ async function criar(req : Request, res : Response) {
     }
     catch(error) {
         console.error("Erro ao criar transação", error);
-        return res.status(400).json({ erro: error.message });
+        return res.status(400).json({ erro: errorMessage(error) });
     }
 }
 
@@ -46,11 +47,11 @@ async function atualizar(req : Request, res : Response) {
     catch(error) {
         console.error("Erro ao atualizar transação", error);
         
-        if(error.message === "Transação não encontrada"){
-            return res.status(404).json({ erro: error.message });
+        if(errorMessage(error) === "Transação não encontrada"){
+            return res.status(404).json({ erro: errorMessage(error) });
         }
 
-        return res.status(400).json({ erro: error.message });
+        return res.status(400).json({ erro: errorMessage(error) });
     }
 }
 
@@ -65,11 +66,11 @@ async function excluir(req : Request, res : Response) {
     catch(error) {
         console.error("Erro ao excluir transação", error);
         
-        if(error.message === "Transação não encontrada"){
-            return res.status(404).json({ erro: error.message });
+        if(errorMessage(error) === "Transação não encontrada"){
+            return res.status(404).json({ erro: errorMessage(error) });
         }
 
-        return res.status(400).json({ erro: error.message });
+        return res.status(400).json({ erro: errorMessage(error) });
     }
 }
 

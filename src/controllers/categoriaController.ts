@@ -1,6 +1,7 @@
 /// <reference path="../types/express.d.ts" />
 import categoriaService = require('../services/categoriaService');
 import { Request, Response, NextFunction } from 'express'
+import errorMessage = require('../utils/erro');
 
 async function repassaTodos(req : Request, res : Response) {
     const usuario_id = (req.usuario as { id: number }).id;
@@ -25,7 +26,7 @@ async function criar(req : Request, res : Response) {
     }
     catch(error) {
         console.error("Erro ao criar categoria", error)
-        return res.status(400).json({ erro: error.message });
+        return res.status(400).json({ erro: errorMessage(error) });
     }
 }
 
@@ -41,11 +42,11 @@ async function atualizar(req : Request, res : Response) {
     catch(error) {
         console.error("Erro ao atualizar categoria");
         
-        if(error.message === "Categoria não encontrada"){
-            return res.status(404).json({ erro: error.message});
+        if(errorMessage(error) === "Categoria não encontrada"){
+            return res.status(404).json({ erro: errorMessage(error)});
         }
 
-        return res.status(400).json({ erro: error.message });
+        return res.status(400).json({ erro: errorMessage(error) });
     }
 }
 
@@ -60,11 +61,11 @@ async function excluir(req : Request, res : Response) {
     catch(error) {
         console.error("Erro ao excluir categoria", error);
 
-        if(error.message === "Categoria não encontrada"){
-            return res.status(404).json({ erro: error.message});
+        if(errorMessage(error)=== "Categoria não encontrada"){
+            return res.status(404).json({ erro: errorMessage(error)});
         }
 
-        return res.status(400).json({ erro: error.message});
+        return res.status(400).json({ erro: errorMessage(error)});
     }
 }
 
