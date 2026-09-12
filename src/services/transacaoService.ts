@@ -75,4 +75,4 @@ async function excluir(id : number, usuario_id : number) {
     }
 } 
 
-export = { criar, listarTodas, atualizar, excluir }
+export = { criar, listarTodas, atualizar, excluir, validarTransacao }
