@@ -141,3 +141,11 @@ primeiro teste. Para testar que uma função lança erro,
 `expect` recebe uma função anônima (`() => ...`), não o resultado
 direto da chamada, necessário para o Jest capturar o throw
 internamente.
+
+## Testes com mock: categoriaService.criar
+`jest.mock('../repositories/categoriaRepository')` substitui o
+repository real por funções espiãs, evitando tocar o banco durante
+os testes. `.mockResolvedValue(...)` simula sucesso, `.mockRejectedValue(...)`
+simula falha. Para funções async que devem lançar erro, a sintaxe é
+`await expect(promise).rejects.toThrow(...)`, diferente de funções
+síncronas.
