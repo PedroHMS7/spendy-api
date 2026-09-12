@@ -65,4 +65,4 @@ async function excluir(id : number, usuario_id : number) {
     }
 }
 
-export = {listarTodas,criar,atualizar,excluir};
+export = {listarTodas,criar,atualizar,excluir,validarCategoria};
