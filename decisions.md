@@ -149,3 +149,9 @@ os testes. `.mockResolvedValue(...)` simula sucesso, `.mockRejectedValue(...)`
 simula falha. Para funções async que devem lançar erro, a sintaxe é
 `await expect(promise).rejects.toThrow(...)`, diferente de funções
 síncronas.
+
+## Testes unitários: validarTransacao
+Mesma técnica de mock aplicada a transacaoService, com uma diferença:
+validarTransacao é async (chama categoriaRepository.buscarPorId), então
+os testes usam `.rejects.toThrow(...)` e `.resolves.not.toThrow()` em
+vez das versões síncronas usadas em validarCategoria.
