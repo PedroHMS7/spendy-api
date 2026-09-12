@@ -131,3 +131,13 @@ uma função `errorMessage(error: unknown): string` reutilizável, que
 checa `error instanceof Error` internamente, isso evita repetir essa
 lógica em cada catch. Último erro isolado: `JWT_SECRET` como
 `string | undefined`, resolvido com `!`.
+
+## Primeiro teste unitário: validarCategoria
+Setup do Jest com ts-jest (precisou adicionar "jest" em `types` no
+tsconfig.json, para describe/it/expect serem reconhecidos).
+`validarCategoria` foi exportada para ser testável diretamente,
+evitando misturar teste de validação com mock de repository no
+primeiro teste. Para testar que uma função lança erro,
+`expect` recebe uma função anônima (`() => ...`), não o resultado
+direto da chamada, necessário para o Jest capturar o throw
+internamente.
