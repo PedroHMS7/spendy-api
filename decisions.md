@@ -177,3 +177,9 @@ Construída via ciclo red-green-refactor: cada teste escrito antes do
 código correspondente, começando pelo caso trivial (lista vazia) e
 evoluindo a complexidade só quando um teste exigia. Usa `.find()` para
 localizar grupo existente por categoria_id, O(n²) para listas grandes.
+
+## Endpoint de resumo mensal
+Expõe `agruparPorCategoria` (construída via TDD) como GET /transacoes/resumo.
+Repository usa JOIN entre transacoes e categorias para trazer nome_categoria
+numa query só. Mês/ano opcionais via query params, com fallback para o
+mês/ano atual.
