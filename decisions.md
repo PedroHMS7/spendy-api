@@ -171,3 +171,9 @@ jwt.sign (mesmo JWT_SECRET), sem precisar de login real, repository
 continua mockado, evitando depender do banco de teste. Diferente dos
 testes unitários, aqui interessa validar a integração entre
 camadas, não uma função isolada.
+
+## TDD: agruparPorCategoria (resumo mensal)
+Construída via ciclo red-green-refactor: cada teste escrito antes do
+código correspondente, começando pelo caso trivial (lista vazia) e
+evoluindo a complexidade só quando um teste exigia. Usa `.find()` para
+localizar grupo existente por categoria_id, O(n²) para listas grandes.
