@@ -162,3 +162,12 @@ próprios, mesma sintaxe (jest.mock('bcrypt')). Para o teste de login
 com sucesso, jwt.sign não foi mockado (roda de verdade, gerando token
 real), então o teste verifica `typeof resultado === 'string'` em vez
 de comparar valor exato, já que o token muda a cada execução.
+
+## Teste de integração: GET /categorias (Supertest)
+Supertest simula requisições HTTP diretamente no `app` (não no `server`,
+que sobe a porta real), testando a cadeia completa rota→middleware→
+controller→service→repository. Token de teste gerado diretamente com
+jwt.sign (mesmo JWT_SECRET), sem precisar de login real, repository
+continua mockado, evitando depender do banco de teste. Diferente dos
+testes unitários, aqui interessa validar a integração entre
+camadas, não uma função isolada.
