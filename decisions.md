@@ -183,3 +183,11 @@ Expõe `agruparPorCategoria` (construída via TDD) como GET /transacoes/resumo.
 Repository usa JOIN entre transacoes e categorias para trazer nome_categoria
 numa query só. Mês/ano opcionais via query params, com fallback para o
 mês/ano atual.
+
+## CI com GitHub Actions
+Workflow roda automaticamente a cada push/PR na main: checkout, setup
+Node 20, npm ci, npm test. Problema real encontrado: testes falhavam no
+CI (secretOrPrivateKey must have a value) porque JWT_SECRET só existia
+no .env local, nunca commitado. Resolvido com GitHub Secrets, valor
+injetado via `env: JWT_SECRET: ${{ secrets.JWT_SECRET }}`, nunca exposto
+em texto plano, mesmo em logs.
