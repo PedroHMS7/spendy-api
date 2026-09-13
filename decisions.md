@@ -155,3 +155,10 @@ Mesma técnica de mock aplicada a transacaoService, com uma diferença:
 validarTransacao é async (chama categoriaRepository.buscarPorId), então
 os testes usam `.rejects.toThrow(...)` e `.resolves.not.toThrow()` em
 vez das versões síncronas usadas em validarCategoria.
+
+## Testes unitários: usuarioService
+Mockei também uma biblioteca externa (bcrypt), não só repositories
+próprios, mesma sintaxe (jest.mock('bcrypt')). Para o teste de login
+com sucesso, jwt.sign não foi mockado (roda de verdade, gerando token
+real), então o teste verifica `typeof resultado === 'string'` em vez
+de comparar valor exato, já que o token muda a cada execução.
