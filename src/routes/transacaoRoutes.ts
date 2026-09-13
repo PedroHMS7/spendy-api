@@ -8,6 +8,8 @@ router.get('/transacoes', autenticar, transacaoController.repassaTodos);
 
 router.post('/transacoes', autenticar,transacaoController.criar);
 
+router.get('/transacoes/resumo', autenticar, transacaoController.resumo);
+
 router.put('/transacoes/:id', autenticar,transacaoController.atualizar);
 
 router.delete('/transacoes/:id', autenticar,transacaoController.excluir);

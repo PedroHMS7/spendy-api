@@ -90,4 +90,25 @@ async function excluir(id : number, usuario_id : number) {
     }
 }
 
-export = { buscarTodas, criar, atualizar, excluir };
+async function buscarPorMes(mes: number, ano: number, usuario_id: number) {
+    try {
+        const inicioMes = `${ano}-${String(mes).padStart(2, '0')}-01`;
+        const fimMes = `${ano}-${String(mes).padStart(2, '0')}-31`;
+
+        const [linhas] = await pool.query<RowDataPacket[]>(
+            `SELECT t.valor, t.tipo, t.categoria_id, c.nome as nome_categoria
+             FROM transacoes t
+             JOIN categorias c ON t.categoria_id = c.id
+             WHERE t.usuario_id = ? AND t.data BETWEEN ? AND ?`,
+            [usuario_id, inicioMes, fimMes]
+        );
+
+        return linhas.map(linha => ({ ...linha, valor: Number(linha.valor) }));
+    }
+    catch (error) {
+        console.error("Erro ao buscar resumo", error);
+        throw error;
+    }
+}
+
+export = { buscarTodas, criar, atualizar, excluir, buscarPorMes };

@@ -74,4 +74,22 @@ async function excluir(req : Request, res : Response) {
     }
 }
 
-export = { repassaTodos, criar, atualizar, excluir }
+async function resumo(req: Request, res: Response) {
+    const { mes, ano } = req.query;
+    const usuario_id = (req.usuario as { id: number }).id;
+
+    const hoje = new Date();
+    const mesAtual = Number(mes) || (hoje.getMonth() + 1);
+    const anoAtual = Number(ano) || hoje.getFullYear();
+
+    try {
+        const resultado = await transacaoService.resumoMensal(mesAtual, anoAtual, usuario_id);
+        return res.status(200).json(resultado);
+    }
+    catch (error) {
+        console.error("Erro ao buscar resumo", error);
+        return res.status(500).json({ erro: "Erro ao buscar resumo" });
+    }
+}
+
+export = { repassaTodos, criar, atualizar, excluir, resumo }

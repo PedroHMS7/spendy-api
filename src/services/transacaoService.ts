@@ -1,5 +1,6 @@
 import transacaoRepository = require('../repositories/transacaoRepository');
 import categoriaRepository = require('../repositories/categoriaRepository');
+import { agruparPorCategoria } from './resumoService';
 
 async function validarTransacao(descricao : string, valor : number, tipo : string, categoria_id : number, usuario_id : number) {
     if(descricao.trim() === ""){
@@ -75,4 +76,9 @@ async function excluir(id : number, usuario_id : number) {
     }
 } 
 
-export = { criar, listarTodas, atualizar, excluir, validarTransacao }
+async function resumoMensal(mes: number, ano: number, usuario_id: number) {
+    const transacoes = await transacaoRepository.buscarPorMes(mes, ano, usuario_id);
+    return agruparPorCategoria(transacoes);
+}
+
+export = { criar, listarTodas, atualizar, excluir, validarTransacao, resumoMensal }
