@@ -22,3 +22,6 @@ coverage/
 
 # Arquivos de sistema
 .DS_Store
+
+
+certs/
