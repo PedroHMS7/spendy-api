@@ -53,10 +53,17 @@ Adicionei `page`/`limit` via query params, calculando `offset = (page - 1) * lim
 
 ## Autenticação: registro e login
 Senhas nunca são armazenadas em texto puro, são sempre hasheadas com bcrypt antes de salvar. Login usa bcrypt.compare para validar a senha
-digitada contra o hash salvo. Login e registro sempre retornam a mesma
-mensagem genérica ("Email ou senha inválidos") em caso de falha, para não
-revelar se o problema foi o email não existir ou a senha estar errada
+digitada contra o hash salvo. O login sempre retorna a mesma mensagem
+genérica ("Email ou senha inválidos!", status 401) em caso de falha, para
+não revelar se o problema foi o email não existir ou a senha estar errada
 (evita enumeração de usuários cadastrados).
+
+O registro é uma exceção consciente: email duplicado retorna 409 "Email
+já cadastrado". Esconder isso no registro exigiria um fluxo de confirmação
+por email (responder sempre "verifique sua caixa de entrada"), que o
+projeto não tem. Sem esse fluxo, o usuário não saberia por que o cadastro
+falhou. É o mesmo trade-off da maioria das aplicações: proteger o login e
+avisar no registro.
 
 ## Middleware de autenticação
 Middleware `autenticar` extrai o token do header `Authorization: Bearer
