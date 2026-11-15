@@ -22,7 +22,7 @@ async function repassaTodos(req : Request, res : Response) {
 }
 
 async function criar(req : Request, res : Response) {
-    const dados = req.body;
+    const dados = req.body || {};
     const usuario_id = (req.usuario as { id: number }).id;
 
     try {
@@ -36,7 +36,7 @@ async function criar(req : Request, res : Response) {
 }
 
 async function atualizar(req : Request, res : Response) {
-    const dados = req.body;
+    const dados = req.body || {};
     const id = Number(req.params.id);
     const usuario_id = (req.usuario as { id: number }).id;
 

@@ -22,6 +22,16 @@ describe('usuarios', () => {
             usuarioService.registrar('Teste', 'teste@teste.com', 'senha123')
         ).rejects.toThrow('Email já cadastrado');
     });
+    it('deveria lançar erro se o email estiver ausente no registro', async () => {
+        await expect(
+            usuarioService.registrar('Teste', undefined as any, 'senha123')
+        ).rejects.toThrow('Email inválido');
+    });
+    it('deveria lançar erro se a senha estiver ausente no login', async () => {
+        await expect(
+            usuarioService.login('teste@teste.com', undefined as any)
+        ).rejects.toThrow('Email ou senha inválidos!');
+    });
     it('deveria logar com sucesso e retornar um token', async () => {
         (usuarioRepository.buscarPorEmail as jest.Mock).mockResolvedValue({
             id: 1,

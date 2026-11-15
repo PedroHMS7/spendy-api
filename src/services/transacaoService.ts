@@ -2,9 +2,13 @@ import transacaoRepository = require('../repositories/transacaoRepository');
 import categoriaRepository = require('../repositories/categoriaRepository');
 import { agruparPorCategoria } from './resumoService';
 
-async function validarTransacao(descricao : string, valor : number, tipo : string, categoria_id : number, usuario_id : number) {
-    if(descricao.trim() === ""){
+async function validarTransacao(descricao : string, valor : number, tipo : string, data : string, categoria_id : number, usuario_id : number) {
+    if(typeof descricao !== 'string' || descricao.trim() === ""){
         throw new Error("Descrição inválida");
+    }
+
+    if(typeof valor !== 'number'){
+        throw new Error("Valor deve ser um número");
     }
 
     if(valor <= 0){
@@ -13,6 +17,10 @@ async function validarTransacao(descricao : string, valor : number, tipo : strin
 
     if(!['receita','despesa'].includes(tipo)){
         throw new Error("Tipo inválido");
+    }
+
+    if(typeof data !== 'string' || isNaN(Date.parse(data))){
+        throw new Error("Data inválida");
     }
 
     const categoria = await categoriaRepository.buscarPorId(categoria_id, usuario_id);
@@ -25,7 +33,7 @@ async function validarTransacao(descricao : string, valor : number, tipo : strin
 async function criar(dados : { descricao : string, valor : number, tipo : string, data : string, categoria_id : number}, usuario_id : number) {
     const { descricao, valor, tipo, data, categoria_id } = dados;
 
-   await validarTransacao(descricao, valor, tipo, categoria_id, usuario_id);
+   await validarTransacao(descricao, valor, tipo, data, categoria_id, usuario_id);
 
     try {
         return await transacaoRepository.criar(dados, usuario_id);
@@ -43,7 +51,7 @@ async function listarTodas(filtros : { tipo?: string, categoria_id?: number }, p
 async function atualizar(id : number, dados : { descricao : string, valor : number, tipo : string, data : string, categoria_id : number}, usuario_id : number) {
     const { descricao, valor, tipo, data, categoria_id} = dados;
 
-    await validarTransacao(descricao, valor, tipo, categoria_id, usuario_id);
+    await validarTransacao(descricao, valor, tipo, data, categoria_id, usuario_id);
 
     try {
         const transacaoAtualizada = await transacaoRepository.atualizar(id,dados,usuario_id);

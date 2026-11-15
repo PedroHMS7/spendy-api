@@ -5,7 +5,7 @@ async function listarTodas(usuario_id : number) {
 }
 
 function validarCategoria(nome : string, tipo : string){
-    if(nome.trim() === "") {
+    if(typeof nome !== 'string' || nome.trim() === "") {
         throw new Error("Nome inválido");
     }
 

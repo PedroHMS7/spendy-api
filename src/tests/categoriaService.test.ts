@@ -10,6 +10,9 @@ describe('categorias', () => {
     it('deveria lançar erro se o nome estiver vazio', () => {
         expect(() => categoriaService.validarCategoria("", "despesa")).toThrow("Nome inválido");
     });
+    it('deveria lançar erro se o nome estiver ausente', () => {
+        expect(() => categoriaService.validarCategoria(undefined as any, "despesa")).toThrow("Nome inválido");
+    });
     it('deveria lançar erro se o tipo não for aceitável', () => {
         expect(() => categoriaService.validarCategoria("Corrida", "esporte")).toThrow("Tipo inválido");
     });

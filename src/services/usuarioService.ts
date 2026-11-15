@@ -4,15 +4,15 @@ import jwt = require('jsonwebtoken');
 
 async function registrar(nome : string, email : string, senha : string) {
     
-    if(nome.trim() === ""){
+    if(typeof nome !== 'string' || nome.trim() === ""){
         throw new Error("Nome inválido")
     }
 
-    if(email.trim() === ""){
+    if(typeof email !== 'string' || email.trim() === ""){
         throw new Error("Email inválido")
     }
 
-    if(senha.trim() === ""){
+    if(typeof senha !== 'string' || senha.trim() === ""){
         throw new Error("Senha inválida")
     }
 
@@ -35,7 +35,11 @@ async function registrar(nome : string, email : string, senha : string) {
 } 
 
 async function login(email : string, senha : string) {
-    
+
+    if(typeof email !== 'string' || typeof senha !== 'string'){
+        throw new Error("Email ou senha inválidos!");
+    }
+
     const usuarioExiste = await usuarioRepository.buscarPorEmail(email);
     
     if(!usuarioExiste){

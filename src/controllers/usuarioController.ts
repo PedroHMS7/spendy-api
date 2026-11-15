@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express'
 import errorMessage = require('../utils/erro');
 
 async function registrar(req : Request, res : Response) {
-    const { nome, email, senha } = req.body;
+    const { nome, email, senha } = req.body || {};
 
     try {
         const novoUsuario = await usuarioService.registrar(nome, email, senha);
@@ -21,7 +21,7 @@ async function registrar(req : Request, res : Response) {
 }
 
 async function login(req : Request, res : Response) {
-    const { email, senha } = req.body;
+    const { email, senha } = req.body || {};
 
     try {
         const token = await usuarioService.login(email, senha);
