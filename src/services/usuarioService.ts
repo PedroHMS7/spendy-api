@@ -1,65 +1,53 @@
 import usuarioRepository = require('../repositories/usuarioRepository');
 import bcrypt = require('bcrypt');
 import jwt = require('jsonwebtoken');
+import { ErroValidacao, ErroNaoAutorizado, ErroConflito } from '../utils/erros';
 
 async function registrar(nome : string, email : string, senha : string) {
-    
+
     if(typeof nome !== 'string' || nome.trim() === ""){
-        throw new Error("Nome inválido")
+        throw new ErroValidacao("Nome inválido")
     }
 
     if(typeof email !== 'string' || email.trim() === ""){
-        throw new Error("Email inválido")
+        throw new ErroValidacao("Email inválido")
     }
 
     if(typeof senha !== 'string' || senha.trim() === ""){
-        throw new Error("Senha inválida")
+        throw new ErroValidacao("Senha inválida")
     }
 
     const emailDuplicado = await usuarioRepository.buscarPorEmail(email);
 
     if(emailDuplicado){
-        throw new Error("Email já cadastrado")
+        throw new ErroConflito("Email já cadastrado")
     }
 
     const senhaHash = await bcrypt.hash(senha, 10);
-    
-    try {
-        const novoUsuario = await usuarioRepository.criar(nome,email,senhaHash)
-        return novoUsuario;
-    }
-    catch(error) {
-        console.error("Erro ao criar usuário", error);
-        throw error;
-    }
-} 
+
+    return await usuarioRepository.criar(nome,email,senhaHash);
+}
 
 async function login(email : string, senha : string) {
 
     if(typeof email !== 'string' || typeof senha !== 'string'){
-        throw new Error("Email ou senha inválidos!");
+        throw new ErroValidacao("Email e senha são obrigatórios");
     }
 
     const usuarioExiste = await usuarioRepository.buscarPorEmail(email);
-    
+
     if(!usuarioExiste){
-        throw new Error("Email ou senha inválidos!");
+        throw new ErroNaoAutorizado("Email ou senha inválidos!");
     }
 
     const comparaSenha = await bcrypt.compare(senha, usuarioExiste.senha_hash);
 
     if(!comparaSenha){
-        throw new Error("Email ou senha inválidos!");
+        throw new ErroNaoAutorizado("Email ou senha inválidos!");
     }
-    
-    try {
-        const token = jwt.sign({ id: usuarioExiste.id, email: usuarioExiste.email }, process.env.JWT_SECRET!, { expiresIn: '1h' });
-        return token;
-    }
-    catch(error) {
-        console.error("Erro ao fazer login", error);
-        throw error;
-    }
+
+    const token = jwt.sign({ id: usuarioExiste.id, email: usuarioExiste.email }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+    return token;
 }
 
 export = { registrar, login }

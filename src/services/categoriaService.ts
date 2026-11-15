@@ -1,5 +1,6 @@
 import categoriaRepository = require('../repositories/categoriaRepository');
 import transacaoRepository = require('../repositories/transacaoRepository');
+import { ErroValidacao, ErroNaoEncontrado, ErroConflito } from '../utils/erros';
 
 async function listarTodas(usuario_id : number) {
     return await categoriaRepository.buscarTodas(usuario_id);
@@ -7,11 +8,11 @@ async function listarTodas(usuario_id : number) {
 
 function validarCategoria(nome : string, tipo : string){
     if(typeof nome !== 'string' || nome.trim() === "") {
-        throw new Error("Nome inválido");
+        throw new ErroValidacao("Nome inválido");
     }
 
     if(!['receita','despesa'].includes(tipo)) {
-        throw new Error("Tipo inválido");
+        throw new ErroValidacao("Tipo inválido");
     }
 }
 
@@ -20,14 +21,7 @@ async function criar(dados : {nome : string, tipo : string}, usuario_id : number
 
     validarCategoria(nome,tipo);
 
-    try {
-        const categoriaCriada = await categoriaRepository.criar(nome,tipo,usuario_id);
-        return categoriaCriada;
-    }
-    catch(error) {
-        console.error("Erro ao criar categoria", error);
-        throw error;
-    }
+    return await categoriaRepository.criar(nome,tipo,usuario_id);
 }
 
 async function atualizar(id : number, dados : {nome : string, tipo : string}, usuario_id : number) {
@@ -35,41 +29,29 @@ async function atualizar(id : number, dados : {nome : string, tipo : string}, us
 
     validarCategoria(nome,tipo);
 
-    try {
-        const categoriaAtualizada = await categoriaRepository.atualizar(id,dados,usuario_id);
+    const categoriaAtualizada = await categoriaRepository.atualizar(id,dados,usuario_id);
 
-        if(categoriaAtualizada === null){
-            throw new Error("Categoria não encontrada");
-        }
+    if(categoriaAtualizada === null){
+        throw new ErroNaoEncontrado("Categoria não encontrada");
+    }
 
-        return categoriaAtualizada;
-    }
-    catch(error){
-        console.error("Erro ao atualizar", error)
-        throw error;
-    }
+    return categoriaAtualizada;
 }
 
 async function excluir(id : number, usuario_id : number) {
-    try {
-        const totalTransacoes = await transacaoRepository.contarPorCategoria(id,usuario_id);
+    const totalTransacoes = await transacaoRepository.contarPorCategoria(id,usuario_id);
 
-        if(totalTransacoes > 0){
-            throw new Error("Categoria possui transações vinculadas");
-        }
-
-        const categoriaExcluida = await categoriaRepository.excluir(id,usuario_id);
-        
-        if(categoriaExcluida === null){
-            throw new Error("Categoria não encontrada");
-        }
-
-        return categoriaExcluida;
+    if(totalTransacoes > 0){
+        throw new ErroConflito("Categoria possui transações vinculadas");
     }
-    catch(error){
-        console.error("Erro ao excluir categoria", error);
-        throw error;
+
+    const categoriaExcluida = await categoriaRepository.excluir(id,usuario_id);
+
+    if(categoriaExcluida === null){
+        throw new ErroNaoEncontrado("Categoria não encontrada");
     }
+
+    return categoriaExcluida;
 }
 
 export = {listarTodas,criar,atualizar,excluir,validarCategoria};

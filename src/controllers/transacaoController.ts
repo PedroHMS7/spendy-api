@@ -1,7 +1,6 @@
 /// <reference path="../types/express.d.ts" />
 import transacaoService = require('../services/transacaoService');
-import { Request, Response, NextFunction } from 'express'
-import errorMessage = require('../utils/erro');
+import { Request, Response } from 'express'
 
 async function repassaTodos(req : Request, res : Response) {
     const filtros : { tipo?: string, categoria_id?: number } = req.query;
@@ -10,34 +9,17 @@ async function repassaTodos(req : Request, res : Response) {
 
     const paginaAtual = Number(page) || 1;
     const limitePorPagina = Number(limit) || 10;
-    
-    try {
-        const transacoes = await transacaoService.listarTodas(filtros, paginaAtual, limitePorPagina, usuario_id);
-        return res.status(200).json(transacoes);
-    }
-    catch(error) {
-        console.error("Erro ao buscar transação", error);
 
-        if(errorMessage(error) === "Página inválida" || errorMessage(error) === "Limite deve estar entre 1 e 100"){
-            return res.status(400).json({ erro: errorMessage(error) });
-        }
-
-        return res.status(500).json({ erro: "Erro ao buscar transações"});
-    }
+    const transacoes = await transacaoService.listarTodas(filtros, paginaAtual, limitePorPagina, usuario_id);
+    return res.status(200).json(transacoes);
 }
 
 async function criar(req : Request, res : Response) {
     const dados = req.body || {};
     const usuario_id = (req.usuario as { id: number }).id;
 
-    try {
-        const transacoes = await transacaoService.criar(dados,usuario_id);
-        return res.status(201).json(transacoes); 
-    }
-    catch(error) {
-        console.error("Erro ao criar transação", error);
-        return res.status(400).json({ erro: errorMessage(error) });
-    }
+    const transacao = await transacaoService.criar(dados,usuario_id);
+    return res.status(201).json(transacao);
 }
 
 async function atualizar(req : Request, res : Response) {
@@ -45,38 +27,16 @@ async function atualizar(req : Request, res : Response) {
     const id = Number(req.params.id);
     const usuario_id = (req.usuario as { id: number }).id;
 
-    try {
-        const transacaoAtualizada = await transacaoService.atualizar(id,dados,usuario_id);
-        return res.status(200).json(transacaoAtualizada);
-    }
-    catch(error) {
-        console.error("Erro ao atualizar transação", error);
-        
-        if(errorMessage(error) === "Transação não encontrada"){
-            return res.status(404).json({ erro: errorMessage(error) });
-        }
-
-        return res.status(400).json({ erro: errorMessage(error) });
-    }
+    const transacaoAtualizada = await transacaoService.atualizar(id,dados,usuario_id);
+    return res.status(200).json(transacaoAtualizada);
 }
 
 async function excluir(req : Request, res : Response) {
     const id = Number(req.params.id);
     const usuario_id = (req.usuario as { id: number }).id;
 
-    try {
-        const transacaoExcluida = await transacaoService.excluir(id,usuario_id);
-        return res.status(204).send();
-    }
-    catch(error) {
-        console.error("Erro ao excluir transação", error);
-        
-        if(errorMessage(error) === "Transação não encontrada"){
-            return res.status(404).json({ erro: errorMessage(error) });
-        }
-
-        return res.status(400).json({ erro: errorMessage(error) });
-    }
+    await transacaoService.excluir(id,usuario_id);
+    return res.status(204).send();
 }
 
 async function resumo(req: Request, res: Response) {
@@ -87,19 +47,8 @@ async function resumo(req: Request, res: Response) {
     const mesAtual = Number(mes) || (hoje.getMonth() + 1);
     const anoAtual = Number(ano) || hoje.getFullYear();
 
-    try {
-        const resultado = await transacaoService.resumoMensal(mesAtual, anoAtual, usuario_id);
-        return res.status(200).json(resultado);
-    }
-    catch (error) {
-        console.error("Erro ao buscar resumo", error);
-
-        if(errorMessage(error) === "Mês inválido" || errorMessage(error) === "Ano inválido"){
-            return res.status(400).json({ erro: errorMessage(error) });
-        }
-
-        return res.status(500).json({ erro: "Erro ao buscar resumo" });
-    }
+    const resultado = await transacaoService.resumoMensal(mesAtual, anoAtual, usuario_id);
+    return res.status(200).json(resultado);
 }
 
 export = { repassaTodos, criar, atualizar, excluir, resumo }

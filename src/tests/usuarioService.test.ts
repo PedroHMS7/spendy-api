@@ -1,6 +1,7 @@
 import usuarioService = require('../services/usuarioService');
 import usuarioRepository = require('../repositories/usuarioRepository');
 import bcrypt = require('bcrypt');
+import { ErroValidacao, ErroNaoAutorizado } from '../utils/erros';
 
 jest.mock('../repositories/usuarioRepository');
 jest.mock('bcrypt');
@@ -27,10 +28,22 @@ describe('usuarios', () => {
             usuarioService.registrar('Teste', undefined as any, 'senha123')
         ).rejects.toThrow('Email inválido');
     });
-    it('deveria lançar erro se a senha estiver ausente no login', async () => {
+    it('deveria lançar erro de validação se a senha estiver ausente no login', async () => {
         await expect(
             usuarioService.login('teste@teste.com', undefined as any)
-        ).rejects.toThrow('Email ou senha inválidos!');
+        ).rejects.toThrow(ErroValidacao);
+    });
+    it('deveria lançar erro de não autorizado se a senha estiver errada', async () => {
+        (usuarioRepository.buscarPorEmail as jest.Mock).mockResolvedValue({
+            id: 1,
+            email: 'teste@teste.com',
+            senha_hash: 'hash_fake'
+        });
+        (bcrypt.compare as jest.Mock).mockResolvedValue(false);
+
+        await expect(
+            usuarioService.login('teste@teste.com', 'senha_errada')
+        ).rejects.toThrow(ErroNaoAutorizado);
     });
     it('deveria logar com sucesso e retornar um token', async () => {
         (usuarioRepository.buscarPorEmail as jest.Mock).mockResolvedValue({
