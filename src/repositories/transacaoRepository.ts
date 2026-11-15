@@ -92,15 +92,18 @@ async function excluir(id : number, usuario_id : number) {
 
 async function buscarPorMes(mes: number, ano: number, usuario_id: number) {
     try {
+        const proximoMes = mes === 12 ? 1 : mes + 1;
+        const anoDoProximoMes = mes === 12 ? ano + 1 : ano;
+
         const inicioMes = `${ano}-${String(mes).padStart(2, '0')}-01`;
-        const fimMes = `${ano}-${String(mes).padStart(2, '0')}-31`;
+        const inicioProximoMes = `${anoDoProximoMes}-${String(proximoMes).padStart(2, '0')}-01`;
 
         const [linhas] = await pool.query<RowDataPacket[]>(
             `SELECT t.valor, t.tipo, t.categoria_id, c.nome as nome_categoria
              FROM transacoes t
              JOIN categorias c ON t.categoria_id = c.id
-             WHERE t.usuario_id = ? AND t.data BETWEEN ? AND ?`,
-            [usuario_id, inicioMes, fimMes]
+             WHERE t.usuario_id = ? AND t.data >= ? AND t.data < ?`,
+            [usuario_id, inicioMes, inicioProximoMes]
         );
 
         return linhas.map(linha => ({ ...linha, valor: Number(linha.valor) }));

@@ -88,6 +88,11 @@ async function resumo(req: Request, res: Response) {
     }
     catch (error) {
         console.error("Erro ao buscar resumo", error);
+
+        if(errorMessage(error) === "Mês inválido" || errorMessage(error) === "Ano inválido"){
+            return res.status(400).json({ erro: errorMessage(error) });
+        }
+
         return res.status(500).json({ erro: "Erro ao buscar resumo" });
     }
 }

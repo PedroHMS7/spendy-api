@@ -85,6 +85,14 @@ async function excluir(id : number, usuario_id : number) {
 } 
 
 async function resumoMensal(mes: number, ano: number, usuario_id: number) {
+    if(!Number.isInteger(mes) || mes < 1 || mes > 12){
+        throw new Error("Mês inválido");
+    }
+
+    if(!Number.isInteger(ano) || ano < 1000 || ano > 9999){
+        throw new Error("Ano inválido");
+    }
+
     const transacoes = await transacaoRepository.buscarPorMes(mes, ano, usuario_id);
     return agruparPorCategoria(transacoes);
 }

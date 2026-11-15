@@ -40,4 +40,22 @@ describe('transacoes', () => {
             transacaoService.validarTransacao("Almoço", 50, "despesa", "2026-01-15", 1, 5)
         ).resolves.not.toThrow();
     });
+    it('deveria lançar erro no resumo se o mês for inválido', async () => {
+        await expect(
+            transacaoService.resumoMensal(13, 2026, 5)
+        ).rejects.toThrow("Mês inválido");
+    });
+    it('deveria lançar erro no resumo se o ano for inválido', async () => {
+        await expect(
+            transacaoService.resumoMensal(1, -5, 5)
+        ).rejects.toThrow("Ano inválido");
+    });
+    it('deveria buscar o resumo com mês e ano válidos', async () => {
+        (transacaoRepository.buscarPorMes as jest.Mock).mockResolvedValue([]);
+
+        const resultado = await transacaoService.resumoMensal(12, 2026, 5);
+
+        expect(transacaoRepository.buscarPorMes).toHaveBeenCalledWith(12, 2026, 5);
+        expect(resultado).toEqual({ receitas: [], despesas: [] });
+    });
 });
