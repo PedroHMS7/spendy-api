@@ -65,6 +65,10 @@ async function excluir(req : Request, res : Response) {
             return res.status(404).json({ erro: errorMessage(error)});
         }
 
+        if(errorMessage(error) === "Categoria possui transações vinculadas"){
+            return res.status(409).json({ erro: errorMessage(error)});
+        }
+
         return res.status(400).json({ erro: errorMessage(error)});
     }
 }

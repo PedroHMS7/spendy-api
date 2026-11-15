@@ -111,4 +111,15 @@ async function buscarPorMes(mes: number, ano: number, usuario_id: number) {
     }
 }
 
-export = { buscarTodas, criar, atualizar, excluir, buscarPorMes };
+async function contarPorCategoria(categoria_id: number, usuario_id: number) {
+    try {
+        const [linhas] = await pool.query<RowDataPacket[]>('SELECT COUNT(*) AS total FROM transacoes WHERE categoria_id = ? AND usuario_id = ?', [categoria_id, usuario_id]);
+        return Number(linhas[0].total);
+    }
+    catch (error) {
+        console.error("Erro ao contar transações da categoria", error);
+        throw error;
+    }
+}
+
+export = { buscarTodas, criar, atualizar, excluir, buscarPorMes, contarPorCategoria };

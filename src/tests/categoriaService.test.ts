@@ -1,7 +1,9 @@
 import categoriaService = require('../services/categoriaService');
 import categoriaRepository = require('../repositories/categoriaRepository');
+import transacaoRepository = require('../repositories/transacaoRepository');
 
 jest.mock('../repositories/categoriaRepository');
+jest.mock('../repositories/transacaoRepository');
 
 describe('categorias', () => {
     it('não deveria lançar erro com dados válidos', () => {
@@ -31,6 +33,23 @@ describe('categorias', () => {
         await expect(
             categoriaService.criar({ nome: 'Lazer', tipo: 'despesa' }, 5)
         ).rejects.toThrow('Erro de conexão');
+    });
+    it('deveria lançar erro ao excluir categoria com transações vinculadas', async () => {
+        (transacaoRepository.contarPorCategoria as jest.Mock).mockResolvedValue(3);
+
+        await expect(
+            categoriaService.excluir(1, 5)
+        ).rejects.toThrow('Categoria possui transações vinculadas');
+
+        expect(categoriaRepository.excluir).not.toHaveBeenCalled();
+    });
+    it('deveria excluir categoria sem transações vinculadas', async () => {
+        (transacaoRepository.contarPorCategoria as jest.Mock).mockResolvedValue(0);
+        (categoriaRepository.excluir as jest.Mock).mockResolvedValue(1);
+
+        const resultado = await categoriaService.excluir(1, 5);
+
+        expect(resultado).toBe(1);
     });
 });
 

@@ -1,4 +1,5 @@
 import categoriaRepository = require('../repositories/categoriaRepository');
+import transacaoRepository = require('../repositories/transacaoRepository');
 
 async function listarTodas(usuario_id : number) {
     return await categoriaRepository.buscarTodas(usuario_id);
@@ -51,6 +52,12 @@ async function atualizar(id : number, dados : {nome : string, tipo : string}, us
 
 async function excluir(id : number, usuario_id : number) {
     try {
+        const totalTransacoes = await transacaoRepository.contarPorCategoria(id,usuario_id);
+
+        if(totalTransacoes > 0){
+            throw new Error("Categoria possui transações vinculadas");
+        }
+
         const categoriaExcluida = await categoriaRepository.excluir(id,usuario_id);
         
         if(categoriaExcluida === null){
