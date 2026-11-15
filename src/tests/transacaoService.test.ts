@@ -40,6 +40,23 @@ describe('transacoes', () => {
             transacaoService.validarTransacao("Almoço", 50, "despesa", "2026-01-15", 1, 5)
         ).resolves.not.toThrow();
     });
+    it('deveria lançar erro na listagem se a página for inválida', async () => {
+        await expect(
+            transacaoService.listarTodas({}, -1, 10, 5)
+        ).rejects.toThrow("Página inválida");
+    });
+    it('deveria lançar erro na listagem se o limite passar de 100', async () => {
+        await expect(
+            transacaoService.listarTodas({}, 1, 100000, 5)
+        ).rejects.toThrow("Limite deve estar entre 1 e 100");
+    });
+    it('deveria retornar a listagem com informações de paginação', async () => {
+        (transacaoRepository.buscarTodas as jest.Mock).mockResolvedValue({ transacoes: [], total: 25 });
+
+        const resultado = await transacaoService.listarTodas({}, 2, 10, 5);
+
+        expect(resultado).toEqual({ transacoes: [], total: 25, pagina: 2, limite: 10, totalPaginas: 3 });
+    });
     it('deveria lançar erro no resumo se o mês for inválido', async () => {
         await expect(
             transacaoService.resumoMensal(13, 2026, 5)

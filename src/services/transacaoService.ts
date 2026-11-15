@@ -45,7 +45,23 @@ async function criar(dados : { descricao : string, valor : number, tipo : string
 }
 
 async function listarTodas(filtros : { tipo?: string, categoria_id?: number }, page : number, limit : number, usuario_id : number) {
-    return await transacaoRepository.buscarTodas(filtros,page,limit,usuario_id);
+    if(!Number.isInteger(page) || page < 1){
+        throw new Error("Página inválida");
+    }
+
+    if(!Number.isInteger(limit) || limit < 1 || limit > 100){
+        throw new Error("Limite deve estar entre 1 e 100");
+    }
+
+    const { transacoes, total } = await transacaoRepository.buscarTodas(filtros,page,limit,usuario_id);
+
+    return {
+        transacoes,
+        total,
+        pagina: page,
+        limite: limit,
+        totalPaginas: Math.ceil(total / limit)
+    };
 }
 
 async function atualizar(id : number, dados : { descricao : string, valor : number, tipo : string, data : string, categoria_id : number}, usuario_id : number) {

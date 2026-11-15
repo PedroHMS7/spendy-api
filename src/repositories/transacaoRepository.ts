@@ -7,7 +7,6 @@ async function buscarTodas(filtros : {tipo?: string, categoria_id?: number}, pag
     try {
         let condicoes = [];
         let parametros = [];
-        let query;
 
         let offset = (page - 1) * limit;
 
@@ -23,18 +22,17 @@ async function buscarTodas(filtros : {tipo?: string, categoria_id?: number}, pag
         condicoes.push('usuario_id = ?');
         parametros.push(usuario_id);
 
-        if(condicoes.length > 0){
-            query = 'SELECT * FROM transacoes WHERE ' + condicoes.join(' AND ');
-        }
-        else {
-            query = 'SELECT * FROM transacoes';
-        }
+        const where = ' WHERE ' + condicoes.join(' AND ');
 
-        query += ' LIMIT ? OFFSET ?';
-        parametros.push(limit, offset);
+        const [contagem] = await pool.query<RowDataPacket[]>('SELECT COUNT(*) AS total FROM transacoes' + where, parametros);
+        const total = Number(contagem[0].total);
 
-        const [linhas] = await pool.query<RowDataPacket[]>(query, parametros);
-        return linhas.map(linha => ({ ...linha, valor: Number(linha.valor) }));
+        const query = 'SELECT * FROM transacoes' + where + ' ORDER BY data DESC, id DESC LIMIT ? OFFSET ?';
+
+        const [linhas] = await pool.query<RowDataPacket[]>(query, [...parametros, limit, offset]);
+        const transacoes = linhas.map(linha => ({ ...linha, valor: Number(linha.valor) }));
+
+        return { transacoes, total };
     }
     catch (error) {
         console.error("Erro ao buscar transação", error);

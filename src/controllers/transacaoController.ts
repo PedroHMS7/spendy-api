@@ -17,6 +17,11 @@ async function repassaTodos(req : Request, res : Response) {
     }
     catch(error) {
         console.error("Erro ao buscar transação", error);
+
+        if(errorMessage(error) === "Página inválida" || errorMessage(error) === "Limite deve estar entre 1 e 100"){
+            return res.status(400).json({ erro: errorMessage(error) });
+        }
+
         return res.status(500).json({ erro: "Erro ao buscar transações"});
     }
 }
